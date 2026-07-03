@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './components/theme-provider';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
@@ -11,7 +12,8 @@ import StudyPage from './pages/StudyPage';
 
 export default function App() {
   return (
-    <AuthProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <AuthProvider>
       <BrowserRouter>
         <Routes>
           {/* public routes */}
@@ -50,5 +52,6 @@ export default function App() {
         }}
       />
     </AuthProvider>
+    </ThemeProvider>
   );
 }

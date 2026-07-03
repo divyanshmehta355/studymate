@@ -6,10 +6,12 @@ import {
   GraduationCap,
   LogOut,
   BookOpen,
-  Menu,
   X,
 } from 'lucide-react';
-import './Sidebar.css';
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
+import { ModeToggle } from './mode-toggle';
 
 export default function Sidebar({ isOpen, onToggle }) {
   const { user, logout } = useAuth();
@@ -20,52 +22,90 @@ export default function Sidebar({ isOpen, onToggle }) {
     navigate('/login');
   }
 
+  const getInitials = (name, email) => {
+    if (name) return name.slice(0, 2).toUpperCase();
+    if (email) return email.slice(0, 2).toUpperCase();
+    return "??";
+  };
+
+  const navItems = [
+    { name: "Dashboard", path: "/", icon: LayoutDashboard },
+    { name: "Chat", path: "/chat", icon: MessageSquare },
+    { name: "Study Tools", path: "/study", icon: GraduationCap },
+  ];
+
   return (
     <>
-      {/* mobile overlay */}
-      {isOpen && <div className="sidebar-overlay" onClick={onToggle} />}
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden" 
+          onClick={onToggle} 
+        />
+      )}
 
-      <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <div className="sidebar-brand">
-            <BookOpen size={22} />
-            <span>StudyMate</span>
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 border-r bg-card text-card-foreground shadow-lg transition-transform duration-300 ease-in-out md:static md:translate-x-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        flex flex-col
+      `}>
+        {/* Header */}
+        <div className="flex h-16 shrink-0 items-center justify-between px-6 border-b">
+          <div className="flex items-center gap-3 font-semibold text-primary">
+            <BookOpen className="h-6 w-6" />
+            <span className="text-lg">StudyMate</span>
           </div>
-          <button className="btn btn-ghost btn-icon sidebar-close" onClick={onToggle}>
-            <X size={18} />
-          </button>
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={onToggle}>
+            <X className="h-5 w-5" />
+          </Button>
         </div>
 
-        <nav className="sidebar-nav">
-          <NavLink to="/" end className="sidebar-link" onClick={onToggle}>
-            <LayoutDashboard size={18} />
-            <span>Dashboard</span>
-          </NavLink>
-          <NavLink to="/chat" className="sidebar-link" onClick={onToggle}>
-            <MessageSquare size={18} />
-            <span>Chat</span>
-          </NavLink>
-          <NavLink to="/study" className="sidebar-link" onClick={onToggle}>
-            <GraduationCap size={18} />
-            <span>Study Tools</span>
-          </NavLink>
+        {/* Navigation */}
+        <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.path === '/'}
+              onClick={() => { if(window.innerWidth < 768) onToggle() }}
+              className={({ isActive }) => `
+                flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors
+                ${isActive 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }
+              `}
+            >
+              <item.icon className="h-5 w-5" />
+              {item.name}
+            </NavLink>
+          ))}
         </nav>
 
-        <div className="sidebar-footer">
-          <div className="sidebar-user">
-            <div className="sidebar-avatar">
-              {user?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
-            </div>
-            <div className="sidebar-user-info">
-              <span className="sidebar-user-name">
+        {/* Footer */}
+        <div className="border-t p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <Avatar className="h-9 w-9 border border-primary/20">
+              <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">
+                {getInitials(user?.full_name, user?.email)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col truncate">
+              <span className="text-sm font-medium truncate">
                 {user?.full_name || user?.email?.split('@')[0]}
               </span>
-              <span className="sidebar-user-email">{user?.email}</span>
+              <span className="text-xs text-muted-foreground truncate">
+                {user?.email}
+              </span>
             </div>
           </div>
-          <button className="btn btn-ghost btn-icon" onClick={handleLogout} title="Logout">
-            <LogOut size={16} />
-          </button>
+          <div className="flex items-center gap-1">
+            <ModeToggle />
+            <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout" className="text-muted-foreground hover:text-destructive">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </aside>
     </>
