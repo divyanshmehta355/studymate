@@ -26,10 +26,9 @@ By avoiding heavy framework abstractions like LangChain, StudyMate relies on a c
 |-------|------------|
 | **Frontend** | React 19, Vite, Tailwind CSS v4, Radix UI, React Markdown |
 | **Backend** | FastAPI (Python), SQLAlchemy, async HTTP clients |
-| **Database** | SQLite (Development) / PostgreSQL (Production ready) |
-| **Vector DB** | ChromaDB (Local vector storage and semantic search) |
+| **Database** | PostgreSQL + `pgvector` (Vector storage & semantic search) |
 | **Embeddings** | HuggingFace (`BAAI/bge-base-en-v1.5`) |
-| **LLMs** | Ollama (Local) / OpenAI / Gemini (API) |
+| **LLMs** | Ollama (Local) / Groq (API) via OpenAI SDK |
 | **Auth** | JWT via `fastapi-users` |
 
 ---
@@ -40,7 +39,7 @@ Unlike typical RAG demos that rely on heavy wrappers, StudyMate implements the c
 
 1. **Ingestion:** PDFs are parsed using `pypdf`, and text is recursively split into overlapping chunks using a custom, lightweight Python implementation of the `RecursiveCharacterTextSplitter`.
 2. **Vectorization:** Text chunks are embedded via the official HuggingFace Hub SDK using `bge-base-en-v1.5`, a state-of-the-art open-source embedding model.
-3. **Retrieval & Generation:** User queries are embedded and searched against ChromaDB. The top context chunks are injected into the system prompt, and the response is streamed back to the client via Server-Sent Events (SSE) using the official `openai` or `ollama` SDKs.
+3. **Retrieval & Generation:** User queries are embedded and searched against PostgreSQL using `pgvector` (cosine distance). The top context chunks are injected into the system prompt, and the response is streamed back to the client via Server-Sent Events (SSE) using the official `ollama` SDK or Groq via the `openai` SDK.
 
 ---
 
