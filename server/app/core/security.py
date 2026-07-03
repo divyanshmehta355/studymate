@@ -1,0 +1,31 @@
+import uuid
+from fastapi_users import FastAPIUsers
+from fastapi_users.authentication import (
+    AuthenticationBackend,
+    BearerTransport,
+    JWTStrategy,
+)
+from app.core.config import get_settings
+from app.models.user import User
+from app.services.user_manager import get_user_manager
+
+settings = get_settings()
+
+# transport: expects the token in the Authorization: Bearer header
+bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+
+
+def get_jwt_strategy() -> JWTStrategy:
+    return JWTStrategy(secret=settings.JWT_SECRET, lifetime_seconds=settings.JWT_LIFETIME_SECONDS)
+
+
+auth_backend = AuthenticationBackend(
+    name="jwt",
+    transport=bearer_transport,
+    get_strategy=get_jwt_strategy,
+)
+
+fastapi_users = FastAPIUsers[User, uuid.UUID](get_user_manager, [auth_backend])
+
+# dependency to get the currently logged-in user
+current_active_user = fastapi_users.current_user(active=True)
