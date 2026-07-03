@@ -1,0 +1,82 @@
+.upload-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-xl);
+}
+
+.upload-zone:hover {
+  border-color: var(--accent-purple);
+  color: var(--text-secondary);
+  background: var(--bg-glass);
+}
+
+.upload-zone-active {
+  border-color: var(--accent-purple) !important;
+  background: rgba(139, 92, 246, 0.1) !important;
+  color: var(--accent-purple-light) !important;
+}
+
+.upload-zone-uploading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.upload-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-md);
+}
+
+.doc-card {
+  padding: var(--space-lg);
+}
+
+.doc-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.doc-icon {
+  color: var(--accent-purple-light);
+}
+
+.doc-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: var(--space-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-meta {
+  display: flex;
+  gap: var(--space-md);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.skeleton-card {
+  padding: var(--space-xl);
+}
+
+.status-spin {
+  animation: spin 1s linear infinite;
+}
